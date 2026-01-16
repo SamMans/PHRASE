@@ -1,0 +1,14 @@
+% Simple and robust string array solution
+files = dir('BLISS_training/*.csv');
+filenames = string({files.name});  % Convert to string array
+
+% Extract patterns for files with enough length
+patterns = extractBetween(filenames(strlength(filenames) >= 5), 3, 5);
+
+% Get unique patterns as string array
+uniquePatterns = unique(patterns);
+
+% Train on folds
+for pattern = uniquePatterns
+    disp()
+end

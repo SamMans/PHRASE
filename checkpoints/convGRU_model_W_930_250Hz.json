@@ -1,0 +1,1 @@
+{"win_sz": 8, "seq_sz": 10, "modalities": ["Right_Shank_Ax", "Right_Shank_Az", "Right_Shank_Gy", "Left_Shank_Ax", "Left_Shank_Az", "Left_Shank_Gy"], "phases": ["LR", "MST", "TS", "PSW", "ISW", "MSW", "TSW"], "n_act": 32}
