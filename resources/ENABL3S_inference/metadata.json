@@ -1,0 +1,26 @@
+{
+  "dataset_info": {
+    "name": "ENABL3S_inference",
+    "description": "Dataset containing shank IMU readings for walking activity with true gait phase labels for healthy subjects.",
+    "version": "1.0",
+    "created_date": "2026-01-15"
+  },
+  
+  "signal_parameters": {
+    "sampling_frequency": 250,
+    "frequency_units": "Hz",
+    "imu_model": "MPU-9250"
+  },
+  
+  "gait_phases": {
+    "phase_names": ["LR", "MST", "TS", "PSW", "SW"],
+    "phase_descriptions": {
+      "LR": "Loading Response",
+      "MST": "Mid Stance",
+      "TS": "Terminal Stance",
+      "PSW": "Pre-Swing",
+      "SW": "Swing"
+    },
+    "phase_count": 5
+  }
+}

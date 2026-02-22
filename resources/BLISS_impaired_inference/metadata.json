@@ -1,0 +1,28 @@
+{
+  "dataset_info": {
+    "name": "BLISS_impaired_inference",
+    "description": "Dataset containing shank IMU readings for walking activity with true gait phase labels for impaired subjects.",
+    "version": "1.0",
+    "created_date": "2026-01-15"
+  },
+  
+  "signal_parameters": {
+    "sampling_frequency": 500,
+    "frequency_units": "Hz",
+    "imu_model": "Delsys Tringo"
+  },
+  
+  "gait_phases": {
+    "phase_names": ["LR", "MST", "TS", "PSW", "ISW", "MSW", "TSW"],
+    "phase_descriptions": {
+      "LR": "Loading Response",
+      "MST": "Mid Stance",
+      "TS": "Terminal Stance",
+      "PSW": "Pre-Swing",
+      "ISW": "Initial Swing",
+      "MSW": "Mid Swing",
+      "TSW": "Terminal Swing"
+    },
+    "phase_count": 7
+  }
+}

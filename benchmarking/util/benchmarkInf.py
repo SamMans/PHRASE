@@ -50,12 +50,13 @@ class phrase_inf:
         likelihood (list): probability score for each phase-window pair.
         anchor_status (list): boolean anchor status for each window (anchor if true).
         modalities (str): Sensory modalities.
+        severe (boolean): Severity indicator
 
     Developer/s:
         Samer A. Mohamed.
         
     """    
-    def __init__(self, fs, PrModel, mode='full'):
+    def __init__(self, fs, PrModel, mode='full', severe=False):
         """
 
         Class constructor: initializes class parameters.
@@ -63,7 +64,8 @@ class phrase_inf:
         Args:
             fs (float): Sampling frequency.
             PrModel (str): PHRASE model file path.
-            mode (str): The mode of operation of PHRASE ('HANN only', and 'full')
+            mode (str): The mode of operation of PHRASE ('ANN', 'HANN', and 'full')
+            severe (boolean): Severity indicator
     
         Returns:
             N/A.
@@ -105,6 +107,14 @@ class phrase_inf:
                 for elem in range(len(hParameters['W'])):
                     self.W.append({k: np.array(v) if k != 'fn' else v for k, v in hParameters['W'][elem].items()})                                              # Convert parameters to numpy arrays 
                 self.modalities = hParameters['modalities']                                                                                                     # Sensor modalities   
+                if severe:
+                    # Lower angular velocity thresholds for slow impaired patients
+                    self.threshold_negative = 0.5
+                    self.threshold_positive = 0.2
+                else:
+                    # Higher thresholds for healthy or mildly impaired patients
+                    self.threshold_negative = 1.5
+                    self.threshold_positive = 0.5
                     
                 # Develop heuristics filter
                 nyquist_freq = 0.5 * fs                                                                                                                         # Sampling rate: fs Hz
@@ -539,9 +549,9 @@ class phrase_inf:
             # Current scan heuristic hits
             Hits = np.zeros((7, windows_num), dtype=bool) # Binary hits array
             prom_win_sz = self.mul * self.win_sz # Multiplier
-            Rneg_locs, _ = find_peaks(-fRgyro, height=1.5, 
+            Rneg_locs, _ = find_peaks(-fRgyro, height=self.threshold_negative, 
                         distance=min(len(fRgyro) - 2, prom_win_sz)) # Right negative peaks
-            Rpos_locs, _ = find_peaks(fRgyro, height=0.5, 
+            Rpos_locs, _ = find_peaks(fRgyro, height=self.threshold_positive, 
                         distance=min(len(fRgyro) - 2, prom_win_sz)) # Right positive peaks
             if len(Rneg_locs) > 0:
                 # Right negative to positive zero crossings (ZC) with conditions
@@ -556,9 +566,9 @@ class phrase_inf:
             else:
                 Rnp_zc_locs = np.array([])  # No valid zero crossings
             Rpn_zc_locs = np.where(np.diff(np.sign(signal['rGyro'])) < 0)[0] # Right positive to negative ZC
-            Lneg_locs, _ = find_peaks(-fLgyro, height=1.5, 
+            Lneg_locs, _ = find_peaks(-fLgyro, height=self.threshold_negative, 
                         distance=min(len(fLgyro) - 2, prom_win_sz)) # Left negative peaks
-            Lpos_locs, _ = find_peaks(fLgyro, height=0.5, 
+            Lpos_locs, _ = find_peaks(fLgyro, height=self.threshold_positive, 
                         distance=min(len(fLgyro) - 2, prom_win_sz)) # Left positive peaks
             if len(Lneg_locs) > 0:
                 # Left negative to positive zero crossings (ZC) with conditions
@@ -584,7 +594,7 @@ class phrase_inf:
             # Initialize prior belief arrays
             prior_prob_given_true = np.ones_like(self.candidacy, dtype=float)
             prior_prob_given_false = np.ones_like(self.candidacy, dtype=float)
-            if self._operation_mode != 'HANN only':
+            if self._operation_mode != 'HANN':
                 prior_prob_given_true[[0,2,3,6], :] = 5
                 r_anchor_locs = np.where(np.array(self.anchor_status)[:, 0])[0].astype(int) # anchor window location
                 l_anchor_locs = np.where(np.array(self.anchor_status)[:, 1])[0].astype(int)
@@ -668,10 +678,11 @@ class phrase_inf:
 
             """Likelihood : Apply Local Pattern Recognition"""
             for newWin in range(past_windows_num,windows_num):
+                pure_ann_output = np.log(self.ANN(np.array(self.feedback[newWin*self.win_sz:(newWin+1)*self.win_sz])))
                 if len(self.log_likelihood) == 0:
-                    new_likelihood = np.log(self.ANN(np.array(self.feedback[newWin*self.win_sz:(newWin+1)*self.win_sz])))  # First window's likelihood
+                    new_likelihood = pure_ann_output  # First window's likelihood
                 else:
-                    new_likelihood = np.array(self.log_likelihood[-1]) + np.log(self.ANN(np.array(self.feedback[newWin*self.win_sz:(newWin+1)*self.win_sz])))
+                    new_likelihood = np.array(self.log_likelihood[-1]) + pure_ann_output
                 self.log_likelihood.append(new_likelihood) # Append cumulative likelihoods
 
             """Bayesian Inference : Fuse Beliefs"""
@@ -832,7 +843,10 @@ class phrase_inf:
                     self.candidacy = self.candidacy[:, new_start_idx:]
                     self.anchor_status = self.anchor_status[new_start_idx:] 
             
-            return prediction, confidence
+            if self._operation_mode == 'ANN':
+                return np.argmax(pure_ann_output), np.max(pure_ann_output)
+            else:
+                return prediction, confidence
         except (TypeError, ValueError) as e:
             print(f"ERROR: {str(e)}")
             sys.exit()
@@ -1876,12 +1890,13 @@ class BMinf:
         ds_phases (list): List of phases acknowledged by the inference dataset's metadata.
         freq (float): Sampling rate of the inference dataset.
         PHRASE_mode (str): Operation mode of PHRASE (if selected)
+        severe (boolean): Severity indicator in case of impairment
 
     Developer/s:
         Samer A. Mohamed.
 
     """
-    def __init__(self, Mparam, infMode = "test", classes=['LR', 'MST', 'TS', 'PSW', 'SW'], PHRASE_mode='full'):
+    def __init__(self, Mparam, infMode = "test", classes=['LR', 'MST', 'TS', 'PSW', 'SW'], PHRASE_mode='full', severe = False):
         """
 
         Class constructor: initializes class parameters.
@@ -1891,6 +1906,7 @@ class BMinf:
             infMode (str): Inference mode (train, validation or test; default: test)
             classes (list): List of strings representing class labels.
             PHRASE_mode (str): Operation mode of PHRASE (if selected)
+            severe (boolean): Severity indicator in case of impairment
     
         Returns:
             N/A.
@@ -1908,6 +1924,7 @@ class BMinf:
         self.inf_method = None
         self.classes = classes # Walking phases
         self.PHRASE_mode = PHRASE_mode
+        self.severe = severe
         
         # Define class attributes
         self.set_path(Mparam=Mparam) # Set class paths
@@ -2170,6 +2187,7 @@ class BMinf:
             print(f"  {self.classes[i]}: {specificity[i]}")
 
         # Plot confusion matrix
+        """
         plt.figure(figsize=(cm.shape[0], cm.shape[1]))
         cm_plt = sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=self.classes, yticklabels=self.classes, \
                     annot_kws={'size': 16, 'weight': 'bold'})
@@ -2184,6 +2202,7 @@ class BMinf:
         plt.title('Confusion Matrix: ' + self.sub_code + ', ' + self.inf_method + ', ' + 'W', \
                   fontsize=16, fontweight='bold')
         plt.show()
+        """
             
         return overall_accuracy, precision, recall, f1, specificity
 
@@ -2284,7 +2303,7 @@ class BMinf:
             
         # Create the classifier inference object
         if self.inf_method == 'phrase':
-            self.classifier = phrase_inf(fs = self.freq, PrModel=model_of_choice, mode=self.PHRASE_mode)
+            self.classifier = phrase_inf(fs = self.freq, PrModel=model_of_choice, mode=self.PHRASE_mode, severe = self.severe)
         elif self.inf_method == 'lstm':
             self.classifier = lstm_inf(PrModel=model_of_choice, PrModel_meta=meta_of_choice) 
         elif self.inf_method == 'cnn-lstm':

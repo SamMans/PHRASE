@@ -1,0 +1,26 @@
+{
+  "dataset_info": {
+    "name": "BATH_inference",
+    "description": "Dataset containing shank IMU readings for walking activity with true gait phase labels.",
+    "version": "1.0",
+    "created_date": "2024-06-18"
+  },
+  
+  "signal_parameters": {
+    "sampling_frequency": 250,
+    "frequency_units": "Hz",
+    "imu_model": "Adafruit ICM"
+  },
+  
+  "gait_phases": {
+    "phase_names": ["LR", "MST", "TS", "PSW", "SW"],
+    "phase_descriptions": {
+      "LR": "Loading Response",
+      "MST": "Mid Stance",
+      "TS": "Terminal Stance",
+      "PSW": "Pre-Swing",
+      "SW": "Swing"
+    },
+    "phase_count": 5
+  }
+}
