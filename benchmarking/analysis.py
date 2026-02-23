@@ -1,5 +1,5 @@
 """
-SIMPLE PAIRED WILCOXON TEST WITH EFFECT SIZES
+SIMPLE PAIRED WILCOXON TEST WITH EFFECT SIZES AND CONFIDENCE INTERVALS
 Using pingouin library
 """
 
@@ -22,22 +22,22 @@ args = parser.parse_args()
 # Resources path
 resources_dir = Path(__file__).parent.parent / 'resources'
 
-# Initialize benchmarks
-benchmarks = {method: [] for method in 
+# Initialize methods' data
+methods = {method: [] for method in 
               ['phrase', 'lstm', 'cnn-lstm', 'convgru', 'gnn', 'transformer']}
 
 # Load data
 for dataset in filter(None, args.datasets or []):
-    for method in benchmarks:
+    for method in methods:
         file_path = resources_dir / dataset / f"{method}_results.json"
         if file_path.exists():
             with open(file_path) as f:
                 data = json.load(f)
             values = data[args.metric] if args.metric == 'accuracy' else data[args.metric][args.phase]
-            benchmarks[method].extend(values)
+            methods[method].extend(values)
 
 # Convert to numpy arrays
-benchmarks = {k: np.array(v) for k, v in benchmarks.items()}
+methods = {k: np.array(v) for k, v in methods.items()}
 
 # ==================== RUN WILCOXON TESTS ====================
 print("=" * 60)
@@ -45,10 +45,14 @@ print("PAIRED WILCOXON TEST: PHRASE vs. BENCHMARKS")
 print("=" * 60)
 
 benchmarks = {
-    'LSTM': LSTM,
-    'CNN-LSTM': CNN_LSTM,
-    'Transformer': Transformer
+    'lstm': methods['lstm'],
+    'cnn-lstm': methods['cnn-lstm'],
+    'convgru': methods['convgru'],
+    'gnn': methods['gnn'],
+    'transformer': methods['transformer']
 }
+
+PHRASE = methods['phrase']
 
 results = {}
 
@@ -107,5 +111,23 @@ summary_df = pd.DataFrame(results).T
 print(summary_df.round(4))
 
 # ==================== EXPORT TO CSV ====================
-summary_df.to_csv('wilcoxon_results.csv')
-print("\nResults saved to 'wilcoxon_results.csv'")
+#summary_df.to_csv('wilcoxon_results.csv')
+#print("\nResults saved to 'wilcoxon_results.csv'")
+
+# =============== 95% CONFIDENCE INTERVALS =================
+# For each benchmark
+for name, benchmark_data in benchmarks.items():
+    if len(PHRASE) > 0 and len(benchmark_data) > 0:
+        # Paired differences
+        diffs = PHRASE - benchmark_data
+        
+        # Bootstrap CI for median difference
+        bootstrap_medians = []
+        for _ in range(10000):
+            sample = np.random.choice(diffs, size=len(diffs), replace=True)
+            bootstrap_medians.append(np.median(sample))
+        
+        ci_low = np.percentile(bootstrap_medians, 2.5)
+        ci_high = np.percentile(bootstrap_medians, 97.5)
+        
+        print(f"{name}: median diff = {np.median(diffs):.2f} [95% CI: {ci_low:.2f}, {ci_high:.2f}]")
