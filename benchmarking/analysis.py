@@ -24,7 +24,7 @@ resources_dir = Path(__file__).parent.parent / 'resources'
 
 # Initialize methods' data
 methods = {method: [] for method in 
-              ['phrase', 'lstm', 'cnn-lstm', 'convgru', 'gnn', 'transformer']}
+              ['phrase_full', 'phrase_HANN', 'phrase_ANN', 'lstm', 'cnn-lstm', 'convGRU', 'gnn', 'transformer']}
 
 # Load data
 for dataset in filter(None, args.datasets or []):
@@ -34,6 +34,7 @@ for dataset in filter(None, args.datasets or []):
             with open(file_path) as f:
                 data = json.load(f)
             values = data[args.metric] if args.metric == 'accuracy' else data[args.metric][args.phase]
+            print(len(values))
             methods[method].extend(values)
 
 # Convert to numpy arrays
@@ -45,14 +46,16 @@ print("PAIRED WILCOXON TEST: PHRASE vs. BENCHMARKS")
 print("=" * 60)
 
 benchmarks = {
+    'phrase_HANN': methods['phrase_HANN'],
+    'phrase_ANN': methods['phrase_ANN'],
     'lstm': methods['lstm'],
     'cnn-lstm': methods['cnn-lstm'],
-    'convgru': methods['convgru'],
+    'convGRU': methods['convGRU'],
     'gnn': methods['gnn'],
     'transformer': methods['transformer']
 }
 
-PHRASE = methods['phrase']
+PHRASE = methods['phrase_full']
 
 results = {}
 
