@@ -119,6 +119,8 @@ print(summary_df.round(4))
 
 # =============== 95% CONFIDENCE INTERVALS =================
 # For each benchmark
+mean_phrase = np.mean(PHRASE); sigma_phrase = np.std(PHRASE)
+print(f"phrase_full: avg: {mean_phrase}±{sigma_phrase}")
 for name, benchmark_data in benchmarks.items():
     if len(PHRASE) > 0 and len(benchmark_data) > 0:
         # Paired differences
@@ -132,5 +134,11 @@ for name, benchmark_data in benchmarks.items():
         
         ci_low = np.percentile(bootstrap_medians, 2.5)
         ci_high = np.percentile(bootstrap_medians, 97.5)
+
+        mean_benchmark = np.mean(benchmark_data)
+        sigma_benchmark = np.std(benchmark_data)
         
-        print(f"{name}: median diff = {np.median(diffs):.2f} [95% CI: {ci_low:.2f}, {ci_high:.2f}]")
+        print(f"{name}: avg: {mean_benchmark}±{sigma_benchmark}; median diff = {np.median(diffs):.2f} [95% CI: {ci_low:.2f}, {ci_high:.2f}]")
+
+        # Latex lines
+        print(f"{name}: avg: {mean_benchmark:.2f}±{sigma_benchmark:.2f} & {results[name]['p_value']:.2f} & {results[name]['effect_size_r']:.2f} & [{ci_low:.2f}, {ci_high:.2f}]")
