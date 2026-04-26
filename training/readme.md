@@ -11,7 +11,11 @@ The training strategy trains the model several times by training the model on da
 To understand why the training strategy was designed this way, please refer to the paper
 
 To start the training procedure:
+
 1- open MATLAB
+
 2- navigate to the directory which contains this readme file on MATLAB
+
 3- run the code trainAll.m by typing trainAll.m in the command window, or clicking on trainAll.m file in current folder, which will open the code, and then click the 'run' button on the toolbar
+
 4- wait till training is finalized, and the pretrained models will automatically be saved to the checkpoints folder in the main project folder
