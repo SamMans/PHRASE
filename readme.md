@@ -4,7 +4,9 @@ The training code for PHRASE is written using MATLAB scripting language in the '
 
 The 'benchmarking' folder contains Python code for PHRASE inference on real-world datasets plus benchmarking codes for other similar methods that are compared against PHRASE (Transformers, GNNs, RNNs, etc.)
 
-The Python code was developed in a conda virtual environment on Ubunto 22.04 LTS. All the dependencies can be installed by downloading the project package that contains this readme file 'PHRASE', navigating to the PHRASE directory, and running this terminal line: conda env create -f tf_env.yml
+The Python code was developed in a conda virtual environment on Ubunto 22.04 LTS. All the dependencies can be installed by downloading the project package that contains this readme file 'PHRASE', navigating to the PHRASE directory, and running this terminal line: 
+
+conda env create -f tf_env.yml
 
 Before running any of the Python files, you have to activate the conda environment 'tf' in the terminal: conda activate tf
 
