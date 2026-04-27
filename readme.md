@@ -8,7 +8,9 @@ The Python code was developed in a conda virtual environment on Ubunto 22.04 LTS
 
 conda env create -f tf_env.yml
 
-Before running any of the Python files, you have to activate the conda environment 'tf' in the terminal: conda activate tf
+Before running any of the Python files, you have to activate the conda environment 'tf' in the terminal: 
+
+conda activate tf
 
 The 'resources' folder contains the dataset-specific csv files that were used in this project
 
