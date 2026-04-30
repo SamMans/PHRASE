@@ -11,11 +11,12 @@ The training strategy trains the model several times by training the model on da
 To understand why the training strategy was designed this way, please refer to the paper: https://www.sciencedirect.com/science/article/pii/S1568494626004539
 
 To start the training procedure:
+1- Download the main project directory 'PHRASE' and unzip it in your preferred directory
 
-1- open MATLAB
+2- open MATLAB
 
-2- navigate to the directory which contains this readme file on MATLAB
+3- make the directory which contains this readme file the working directory on MATLAB
 
-3- run the code trainAll.m by typing trainAll.m in the command window, or clicking on trainAll.m file in current folder, which will open the code, and then click the 'run' button on the toolbar
+3- run the code trainAll.m by typing trainAll.m in the command window on MATLAB, or clicking on trainAll.m file in current working directory, which will open the code, and then click the 'run' button on the toolbar
 
 4- wait till training is finalized, and the pretrained models will automatically be saved to the checkpoints folder in the main project folder
