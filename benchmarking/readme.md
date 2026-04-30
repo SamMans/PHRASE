@@ -16,8 +16,6 @@ The framework supports:
 
 ## Repository Structure
 
-```
-```
 benchmarking/
 
 ├── train.py                    # Main training script
