@@ -15,8 +15,6 @@ PHRASE is a hybrid approach that integrates:
 
 ## Repository Structure
 
-```
-```
 phrase_train/
 ├── trainAll.m                 # Main training script (runs all subjects)
 ├── PHRASE_Train.m             # Core training function for PHRASE
