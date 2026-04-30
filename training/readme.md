@@ -242,3 +242,7 @@ Personal Email: samermansour1994@gmail.com
 | "File not found" | Check that CSV files follow the naming convention |
 | Empty bins warning | This is normal for signals with no peaks detected |
 | PCA numerical issues | Large feature vectors may cause instability; reduce `win_size` |
+
+## License
+
+MIT License 
