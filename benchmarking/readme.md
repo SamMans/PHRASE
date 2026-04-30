@@ -19,17 +19,17 @@ The framework supports:
 ```
 benchmarking/
 ├── train.py                    # Main training script
-|
+
 ├── inf.py                      # Main inference script
-|
+
 ├── analysis.py                 # Statistical analysis script
-|
+
 ├── util/
-|
+
 │   ├── benchmarkTrain.py       # Training class (BMtrainer)
-|   |
+
 │   └── benchmarkInf.py         # Inference classes (BMinf + model wrappers)
-|
+
 └── README.md                   # This file
 ```
 
@@ -44,10 +44,13 @@ Command-line interface for training models. Parses user arguments and delegates 
 python3 train.py --model "add type of training model here: lstm, cnn-lstm, convGRU, gnn, transformer" --path /path/to/dataset --model lstm --ratio "desired ratio: training freq. / test freq."
 ```
 
-note 1: remove "..." and add your desired option
-note 2: training freq. is the sensory sampling frequency of the training set's IMUs
-note 3: test fre. is the expected sensory sampling frequency of the test set
-note 4: the ratio is not required for PHRASE's MATLAB training code because PHRASE adapts naturally to any frequency
+**Note 1:** remove "..." and add your desired option
+
+**Note 2:** training freq. is the sensory sampling frequency of the training set's IMUs
+
+**Note 3:** test fre. is the expected sensory sampling frequency of the test set
+
+**Note 4:** the ratio is not required for PHRASE's MATLAB training code because PHRASE adapts naturally to any frequency
 
 ### `util/benchmarkTrain.py`
 Contains the `BMtrainer` class responsible for:
@@ -68,7 +71,7 @@ Command-line interface for inference. Evaluates trained models on test subjects.
 python3 inf.py --dataset "select your dataset from the resources file e.g., BLISS_inference" --pretrained /path/to/checkpoints --model "select desired model e.g., lstm"
 ```
 
-note : remove "..." and add your desired option
+**Note:** remove "..." and add your desired option
 
 ### `util/benchmarkInf.py`
 Contains inference classes:
@@ -86,8 +89,9 @@ Statistical post-processing script. Performs paired Wilcoxon tests comparing PHR
 python3 analysis.py --ds1 dataset1 --ds2 dataset2 --metric "choose desired metric e.g., accuracy" --phase "choose desired gait phase e.g., LR"
 ```
 
-note 1: you can add up to 6 datasets for analysis --ds1 --ds2 ... --ds6
-note 2: remove "..." and add your desired option
+**Note 1:** you can add up to 6 datasets for analysis --ds1 --ds2 ... --ds6
+
+**Note 2:** remove "..." and add your desired option
 
 ## Data Format Requirements
 
@@ -220,4 +224,4 @@ Email: sa2930@bath.ac.uk
 ## License
 
 MIT License 
-```
+
