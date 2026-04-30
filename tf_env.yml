@@ -1,0 +1,13 @@
+name: tf
+channels:
+  - defaults
+dependencies:
+  - python=3.10
+  - conda-forge::pandas
+  - matplotlib==3.5.3
+  - anaconda::scipy
+  - anaconda::scikit-learn
+  - anaconda::seaborn
+  - conda-forge::pingouin==0.4.0
+  - xarray==2023.12.0
+prefix: /home/sama11/anaconda3/envs/tf
