@@ -8,7 +8,7 @@ The trained model will be generated as a .json file that can then be used for be
 
 The training strategy trains the model several times by training the model on data from seen subjects, validating on held-out data from the same seen subjects, then testing on held-out data from one unseen subject (i.e, if we have ten subjects, the model will be trained 10 times, generating 10 pretrained models)
 
-To understand why the training strategy was designed this way, please refer to the paper
+To understand why the training strategy was designed this way, please refer to the paper: https://www.sciencedirect.com/science/article/pii/S1568494626004539
 
 To start the training procedure:
 
