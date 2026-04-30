@@ -19,17 +19,17 @@ The framework supports:
 ```
 benchmarking/
 ├── train.py                    # Main training script
-
+|
 ├── inf.py                      # Main inference script
-
+|
 ├── analysis.py                 # Statistical analysis script
-
+|
 ├── util/
-
+|
 │   ├── benchmarkTrain.py       # Training class (BMtrainer)
-
+|   |
 │   └── benchmarkInf.py         # Inference classes (BMinf + model wrappers)
-
+|
 └── README.md                   # This file
 ```
 
